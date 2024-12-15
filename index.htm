@@ -1,0 +1,79 @@
+<html>
+
+<head>
+  <!-- table de caractères FR avec accents et ç -->
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <!-- lien vers la feuille de style -->
+  <link href="style.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+  
+  <div class='centre'>
+    <h3>Le jeu des devinettes</h3>
+    <p>Devine le nombre entre 1 et 100 : <input type='number' id='prix'></p>
+    <button onClick='lePrix()'>Envoyer</button>
+    <p>Résultat : <span id='resultat'>?</span></p>
+    <h4>Historique des tentatives</h4>
+    <ul id="historique"></ul>
+    <center><button id="rejouer" style="display: none;" onclick="location.reload()">Rejouer</button></center>
+    <p id="erreur" style="color: red; display: none;">La valeur doit être comprise entre 1 et 100.</p> <!-- Liste des tentatives -->
+  </div>
+
+  <script>
+document.addEventListener('keydown', function(event) {
+            if (event.key === 'F1') {
+                event.preventDefault();
+                window.location.href = '/aide.html';
+            }
+        });
+
+    // Génère un nombre aléatoire entre 1 et 100
+    let x = Math.floor((Math.random() * 100) + 1);
+    var nbEssais = 0;
+
+    // Fonction pour déterminer le jeu du candidat
+    function lePrix() {
+    let valeur = parseInt(document.getElementById('prix').value);
+    let affichage;
+
+    if (isNaN(valeur) || valeur < 1 || valeur > 100) {
+        document.getElementById('erreur').style.display = 'block'; // Afficher le message d'erreur
+        return; // Arrêter la fonction ici
+    } else {
+        document.getElementById('erreur').style.display = 'none'; // Cacher le message d'erreur
+    }
+
+    if (valeur == x) {
+        affichage = "C'est Gagné ! " + nbEssais + " essais.";
+        
+        // Afficher le bouton "Rejouer"
+        document.getElementById('rejouer').style.display = 'block';
+        
+        // Désactiver le bouton envoyer pour éviter de rejouer
+        document.querySelector('button[onClick="lePrix()"]').disabled = true;
+        document.getElementById('prix').disabled = true;
+
+    } else {
+        if (valeur > x) {
+            affichage = "C'est moins";
+        } else {
+            affichage = "C'est plus";
+        }
+
+        // Ajouter l'essai à l'historique
+        let historiqueList = document.getElementById('historique');
+        let li = document.createElement('li');
+        li.textContent = `Essai ${nbEssais + 1}: ${valeur} - ${affichage}`;
+        historiqueList.appendChild(li);
+
+        nbEssais++; // Incrémenter le nombre d'essais
+    }
+
+    // Afficher le résultat actuel
+    document.getElementById('resultat').innerHTML = affichage;
+}
+  </script>
+</body>
+
+</html>
